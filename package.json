@@ -1,6 +1,6 @@
 {
   "name": "internship-tracker",
-  "version": "logs",
+  "version": "deploy",
   "private": true,
   "type": "module",
   "description": "Internship tracker with Vercel Blob-backed API routes.",

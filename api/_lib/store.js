@@ -51,7 +51,11 @@ export async function readState() {
     if (!blob) {
       return createDefaultState();
     }
-    const response = await fetch(blob.downloadUrl);
+    const blobUrl = blob.downloadUrl ?? blob.url;
+    if (!blobUrl) {
+      throw new Error("State blob missing accessible URL");
+    }
+    const response = await fetch(blobUrl, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`Unable to download blob (${response.status})`);
     }
