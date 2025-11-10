@@ -1,0 +1,10 @@
+{
+  "name": "internship-tracker",
+  "version": "env",
+  "private": true,
+  "type": "module",
+  "description": "Internship tracker with Vercel Blob-backed API routes.",
+  "dependencies": {
+    "@vercel/blob": "^0.19.0"
+  }
+}

@@ -57,6 +57,20 @@
         font-size: 1rem;
       }
 
+      .sync-status {
+        margin: 0.35rem 0 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .sync-status[data-variant="success"] {
+        color: #15803d;
+      }
+
+      .sync-status[data-variant="error"] {
+        color: #c53030;
+      }
+
       .tracker-grid,
       .stats-grid {
         display: grid;
@@ -166,6 +180,13 @@
       button:active {
         transform: translateY(0);
         box-shadow: none;
+      }
+
+      button:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
       }
 
       .company-list {
@@ -326,9 +347,10 @@
   <body>
     <main>
       <header>
-        <h1>Dfi3 Competitive</h1>
+        <h1>Internship Application Race</h1>
         <p class="lead">Track the hustle between Lmatador, De Lorche, and Del Mundo. Log applications, keep tabs on company lists, and see who is leading.</p>
         <p class="team-total">Team total: <span data-role="team-total">0</span> applications</p>
+        <p class="sync-status" data-role="sync-status">Syncing latest data…</p>
       </header>
 
       <section class="tracker-grid">
@@ -443,15 +465,19 @@
           { id: "de-lorche", name: "De Lorche" },
           { id: "del-mundo", name: "Del Mundo" },
         ];
-        const STORAGE_KEY = "internship-tracker-state";
         const MAX_RECENT_ENTRIES = 30;
+        const API = {
+          state: "/api/state",
+          log: "/api/log",
+        };
 
-        let state = loadState() ?? createDefaultState();
+        let state = createDefaultState();
 
         const cardRefs = {};
         const statRefs = {};
 
         const teamTotalEl = document.querySelector('[data-role="team-total"]');
+        const syncStatusEl = document.querySelector('[data-role="sync-status"]');
 
         document.querySelectorAll(".person-card").forEach((card) => {
           const personId = card.dataset.person;
@@ -462,12 +488,11 @@
             countryInputEl: card.querySelector('[data-role="country-input"]'),
             listEl: card.querySelector('[data-role="company-list"]'),
             errorEl: card.querySelector('[data-role="input-error"]'),
+            buttonEl: card.querySelector('[data-role="add-btn"]'),
           };
 
-          const addBtn = card.querySelector('[data-role="add-btn"]');
-          addBtn.addEventListener("click", () => logApplication(personId));
-
           const { companyInputEl, countryInputEl } = cardRefs[personId];
+          cardRefs[personId].buttonEl.addEventListener("click", () => logApplication(personId));
 
           companyInputEl.addEventListener("input", () => clearError(personId, "company"));
           countryInputEl.addEventListener("input", () => clearError(personId, "country"));
@@ -492,59 +517,22 @@
           };
         });
 
-        initialRender();
+        renderAll();
+        refreshFromServer();
 
-        function createDefaultState() {
-          return PEOPLE.reduce((acc, person) => {
-            acc[person.id] = { count: 0, applications: [] };
-            return acc;
-          }, {});
-        }
-
-        function loadState() {
+        async function refreshFromServer() {
+          setSyncStatus("Syncing latest data…", "info");
           try {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return null;
-            const parsed = JSON.parse(raw);
-            const normalized = createDefaultState();
-            PEOPLE.forEach(({ id }) => {
-              const personData = parsed[id];
-              if (!personData) return;
-              const savedApps = Array.isArray(personData.applications) ? personData.applications : [];
-              normalized[id].applications = savedApps
-                .filter((entry) => entry.company && entry.country)
-                .slice(0, MAX_RECENT_ENTRIES)
-                .map((entry) => ({
-                  company: entry.company,
-                  country: entry.country,
-                  timestamp: entry.timestamp ?? new Date().toISOString(),
-                }));
-              const savedCount = typeof personData.count === "number" ? personData.count : normalized[id].applications.length;
-              normalized[id].count = savedCount;
-            });
-            return normalized;
+            const remoteState = await fetchJson(API.state);
+            applyState(remoteState);
+            setSyncStatus("Up to date", "success");
           } catch (error) {
-            console.warn("Unable to load saved tracker data", error);
-            return null;
+            console.warn("Unable to sync from server", error);
+            setSyncStatus("Offline — data may be stale.", "error");
           }
         }
 
-        function persistState() {
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          } catch (error) {
-            console.warn("Unable to save tracker data", error);
-          }
-        }
-
-        function initialRender() {
-          PEOPLE.forEach(({ id }) => {
-            updatePersonCard(id);
-          });
-          updateStats();
-        }
-
-        function logApplication(personId) {
+        async function logApplication(personId) {
           const refs = cardRefs[personId];
           const company = refs.companyInputEl.value.trim();
           const country = refs.countryInputEl.value.trim();
@@ -557,23 +545,67 @@
             return;
           }
 
-          state[personId].count += 1;
-          state[personId].applications.unshift({
-            company,
-            country,
-            timestamp: new Date().toISOString(),
-          });
+          setButtonLoading(personId, true);
+          setSyncStatus("Saving application…", "info");
 
-          if (state[personId].applications.length > MAX_RECENT_ENTRIES) {
-            state[personId].applications.length = MAX_RECENT_ENTRIES;
+          try {
+            const payload = { personId, company, country };
+            const updatedState = await fetchJson(API.log, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            refs.companyInputEl.value = "";
+            refs.countryInputEl.value = "";
+            clearError(personId);
+            applyState(updatedState);
+            setSyncStatus("Synced just now", "success");
+          } catch (error) {
+            console.error("Unable to log application", error);
+            setSyncStatus("Could not save. Check your connection and retry.", "error");
+          } finally {
+            setButtonLoading(personId, false);
           }
+        }
 
-          refs.companyInputEl.value = "";
-          refs.countryInputEl.value = "";
-          clearError(personId);
-          updatePersonCard(personId);
+        function applyState(nextState) {
+          state = normalizeIncomingState(nextState);
+          renderAll();
+        }
+
+        function createDefaultState() {
+          return PEOPLE.reduce((acc, { id }) => {
+            acc[id] = { count: 0, applications: [] };
+            return acc;
+          }, {});
+        }
+
+        function normalizeIncomingState(raw = {}) {
+          const base = createDefaultState();
+          PEOPLE.forEach(({ id }) => {
+            const data = raw[id];
+            if (!data) {
+              return;
+            }
+            const entries = Array.isArray(data.applications) ? data.applications : [];
+            base[id] = {
+              count: typeof data.count === "number" ? data.count : entries.length,
+              applications: entries
+                .filter((entry) => entry && entry.company && entry.country)
+                .slice(0, MAX_RECENT_ENTRIES)
+                .map((entry) => ({
+                  company: entry.company,
+                  country: entry.country,
+                  timestamp: entry.timestamp ?? new Date().toISOString(),
+                })),
+            };
+          });
+          return base;
+        }
+
+        function renderAll() {
+          PEOPLE.forEach(({ id }) => updatePersonCard(id));
           updateStats();
-          persistState();
         }
 
         function showError(personId, { missingCompany, missingCountry }) {
@@ -585,8 +617,7 @@
             refs.countryInputEl.classList.add("has-error");
           }
           refs.errorEl.classList.add("is-visible");
-          const focusTarget = missingCompany ? refs.companyInputEl : refs.countryInputEl;
-          focusTarget.focus();
+          (missingCompany ? refs.companyInputEl : refs.countryInputEl).focus();
         }
 
         function clearError(personId, field) {
@@ -603,6 +634,11 @@
           ) {
             refs.errorEl.classList.remove("is-visible");
           }
+        }
+
+        function setButtonLoading(personId, isLoading) {
+          const button = cardRefs[personId].buttonEl;
+          button.disabled = isLoading;
         }
 
         function updatePersonCard(personId) {
@@ -699,7 +735,6 @@
 
             const bar = document.createElement("span");
             bar.className = "histogram-bar";
-            bar.dataset.person = personId;
             bar.style.width = `${Math.max((item.count / maxCount) * 100, 6)}%`;
 
             const countEl = document.createElement("span");
@@ -720,6 +755,29 @@
             hour: "numeric",
             minute: "2-digit",
           });
+        }
+
+        function setSyncStatus(message, variant = "info") {
+          if (!syncStatusEl) {
+            return;
+          }
+          syncStatusEl.textContent = message;
+          syncStatusEl.dataset.variant = variant;
+        }
+
+        async function fetchJson(url, options = {}) {
+          const config = {
+            ...options,
+            headers: {
+              Accept: "application/json",
+              ...(options.headers || {}),
+            },
+          };
+          const response = await fetch(url, config);
+          if (!response.ok) {
+            throw new Error(`Request failed (${response.status})`);
+          }
+          return response.json();
         }
       })();
     </script>
