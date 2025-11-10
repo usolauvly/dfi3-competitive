@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internship Application Tracker</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f5f6fb;
+        --card: #ffffff;
+        --text: #1f2430;
+        --muted: #6c778a;
+        --border: #e1e4ec;
+        --accent-lmatador: #f58634;
+        --accent-de-lorche: #3d9ec9;
+        --accent-del-mundo: #6f63f6;
+        --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 4rem;
+      }
+
+      header {
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: clamp(2rem, 4vw, 2.75rem);
+      }
+
+      .lead {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--muted);
+      }
+
+      .team-total {
+        margin-top: 0.75rem;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .tracker-grid,
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .person-card,
+      .stat-card {
+        background: var(--card);
+        border-radius: 1rem;
+        padding: 1.25rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+      }
+
+      .person-card header {
+        margin-bottom: 1rem;
+      }
+
+      .person-card h2 {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+
+      .count-label {
+        margin: 0.25rem 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .count {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin: 0.15rem 0 0;
+      }
+
+      .input-stack {
+        margin: 1rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+      }
+
+      .input-block {
+        margin: 0;
+      }
+
+      .input-block label {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 0.35rem;
+        color: var(--muted);
+      }
+
+      .input-block input {
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .input-block input:focus {
+        outline: none;
+        border-color: #7c8eff;
+        box-shadow: 0 0 0 3px rgba(124, 142, 255, 0.15);
+      }
+
+      .input-block input.has-error {
+        border-color: #f55555;
+        box-shadow: 0 0 0 3px rgba(245, 85, 85, 0.15);
+      }
+
+      .input-error {
+        color: #c53030;
+        font-size: 0.85rem;
+        margin: 0.35rem 0 0;
+        display: none;
+      }
+
+      .input-error.is-visible {
+        display: block;
+      }
+
+      button {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.7rem;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #fff;
+        background: #1f9aa2;
+        transition: transform 0.1s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(31, 154, 162, 0.25);
+      }
+
+      button:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .company-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .company-list li {
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.65rem;
+        border: 1px dashed var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 0.9rem;
+        gap: 0.35rem;
+      }
+
+      .company-entry {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: baseline;
+      }
+
+      .company-name {
+        font-weight: 600;
+      }
+
+      .company-country {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .company-date {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .company-list li.empty {
+        justify-content: center;
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      .stats-section h3 {
+        margin: 0 0 0.75rem;
+      }
+
+      .stat-card h4 {
+        margin: 0 0 0.4rem;
+      }
+
+      .stat-line {
+        display: flex;
+        justify-content: space-between;
+        margin: 0.2rem 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .histogram {
+        margin-top: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .histogram-row {
+        display: grid;
+        grid-template-columns: minmax(0, 42%) minmax(0, 1fr) auto;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .histogram-label {
+        font-size: 0.85rem;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .histogram-bar-wrapper {
+        position: relative;
+        height: 0.45rem;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+      }
+
+      .histogram-bar {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--text);
+        transition: width 0.2s ease;
+      }
+
+      .histogram-count {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        text-align: right;
+      }
+
+      .histogram-empty {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      .stat-card[data-person="lmatador"] .histogram-bar {
+        background: var(--accent-lmatador);
+      }
+
+      .stat-card[data-person="de-lorche"] .histogram-bar {
+        background: var(--accent-de-lorche);
+      }
+
+      .stat-card[data-person="del-mundo"] .histogram-bar {
+        background: var(--accent-del-mundo);
+      }
+
+      .stat-line span:last-child {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --card: #0f192f;
+          --text: #f1f5f9;
+          --muted: #94a3b8;
+          --border: #1e293b;
+          --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+          background: #28afc2;
+        }
+
+        .company-list li {
+          border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .histogram-bar-wrapper {
+          background: rgba(255, 255, 255, 0.12);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Internship Application Race</h1>
+        <p class="lead">Track the hustle between Lmatador, De Lorche, and Del Mundo. Log applications, keep tabs on company lists, and see who is leading.</p>
+        <p class="team-total">Team total: <span data-role="team-total">0</span> applications</p>
+      </header>
+
+      <section class="tracker-grid">
+        <article class="person-card" data-person="lmatador">
+          <header>
+            <h2>Lmatador</h2>
+            <p class="count-label">Applications logged</p>
+            <p class="count" data-role="count">0</p>
+          </header>
+          <div class="input-stack">
+            <div class="input-block">
+              <label for="company-lmatador">Company name</label>
+              <input type="text" id="company-lmatador" placeholder="e.g., SpaceY" data-role="company-input" autocomplete="off" />
+            </div>
+            <div class="input-block">
+              <label for="country-lmatador">Country</label>
+              <input type="text" id="country-lmatador" placeholder="e.g., Canada" data-role="country-input" autocomplete="off" />
+            </div>
+            <p class="input-error" data-role="input-error">Add both the company and country before logging.</p>
+          </div>
+          <button type="button" data-role="add-btn">Add application</button>
+          <ul class="company-list" data-role="company-list">
+            <li class="empty">No applications yet</li>
+          </ul>
+        </article>
+
+        <article class="person-card" data-person="de-lorche">
+          <header>
+            <h2>De Lorche</h2>
+            <p class="count-label">Applications logged</p>
+            <p class="count" data-role="count">0</p>
+          </header>
+          <div class="input-stack">
+            <div class="input-block">
+              <label for="company-de-lorche">Company name</label>
+              <input type="text" id="company-de-lorche" placeholder="e.g., DeepCore Labs" data-role="company-input" autocomplete="off" />
+            </div>
+            <div class="input-block">
+              <label for="country-de-lorche">Country</label>
+              <input type="text" id="country-de-lorche" placeholder="e.g., Brazil" data-role="country-input" autocomplete="off" />
+            </div>
+            <p class="input-error" data-role="input-error">Add both the company and country before logging.</p>
+          </div>
+          <button type="button" data-role="add-btn">Add application</button>
+          <ul class="company-list" data-role="company-list">
+            <li class="empty">No applications yet</li>
+          </ul>
+        </article>
+
+        <article class="person-card" data-person="del-mundo">
+          <header>
+            <h2>Del Mundo</h2>
+            <p class="count-label">Applications logged</p>
+            <p class="count" data-role="count">0</p>
+          </header>
+          <div class="input-stack">
+            <div class="input-block">
+              <label for="company-del-mundo">Company name</label>
+              <input type="text" id="company-del-mundo" placeholder="e.g., FutureWorks" data-role="company-input" autocomplete="off" />
+            </div>
+            <div class="input-block">
+              <label for="country-del-mundo">Country</label>
+              <input type="text" id="country-del-mundo" placeholder="e.g., Japan" data-role="country-input" autocomplete="off" />
+            </div>
+            <p class="input-error" data-role="input-error">Add both the company and country before logging.</p>
+          </div>
+          <button type="button" data-role="add-btn">Add application</button>
+          <ul class="company-list" data-role="company-list">
+            <li class="empty">No applications yet</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="stats-section">
+        <h3>Stats by person</h3>
+        <div class="stats-grid">
+          <article class="stat-card" data-person="lmatador">
+            <h4>Lmatador</h4>
+            <p class="stat-line"><span>Total logged</span><span data-role="stat-total">0</span></p>
+            <p class="stat-line"><span>Share of total</span><span data-role="stat-share">0%</span></p>
+            <p class="stat-line"><span>Latest application</span><span data-role="stat-latest">—</span></p>
+            <div class="histogram" data-role="histogram">
+              <p class="histogram-empty">No companies yet</p>
+            </div>
+          </article>
+          <article class="stat-card" data-person="de-lorche">
+            <h4>De Lorche</h4>
+            <p class="stat-line"><span>Total logged</span><span data-role="stat-total">0</span></p>
+            <p class="stat-line"><span>Share of total</span><span data-role="stat-share">0%</span></p>
+            <p class="stat-line"><span>Latest application</span><span data-role="stat-latest">—</span></p>
+            <div class="histogram" data-role="histogram">
+              <p class="histogram-empty">No companies yet</p>
+            </div>
+          </article>
+          <article class="stat-card" data-person="del-mundo">
+            <h4>Del Mundo</h4>
+            <p class="stat-line"><span>Total logged</span><span data-role="stat-total">0</span></p>
+            <p class="stat-line"><span>Share of total</span><span data-role="stat-share">0%</span></p>
+            <p class="stat-line"><span>Latest application</span><span data-role="stat-latest">—</span></p>
+            <div class="histogram" data-role="histogram">
+              <p class="histogram-empty">No companies yet</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const PEOPLE = [
+          { id: "lmatador", name: "Lmatador" },
+          { id: "de-lorche", name: "De Lorche" },
+          { id: "del-mundo", name: "Del Mundo" },
+        ];
+        const STORAGE_KEY = "internship-tracker-state";
+        const MAX_RECENT_ENTRIES = 30;
+
+        let state = loadState() ?? createDefaultState();
+
+        const cardRefs = {};
+        const statRefs = {};
+
+        const teamTotalEl = document.querySelector('[data-role="team-total"]');
+
+        document.querySelectorAll(".person-card").forEach((card) => {
+          const personId = card.dataset.person;
+
+          cardRefs[personId] = {
+            countEl: card.querySelector('[data-role="count"]'),
+            companyInputEl: card.querySelector('[data-role="company-input"]'),
+            countryInputEl: card.querySelector('[data-role="country-input"]'),
+            listEl: card.querySelector('[data-role="company-list"]'),
+            errorEl: card.querySelector('[data-role="input-error"]'),
+          };
+
+          const addBtn = card.querySelector('[data-role="add-btn"]');
+          addBtn.addEventListener("click", () => logApplication(personId));
+
+          const { companyInputEl, countryInputEl } = cardRefs[personId];
+
+          companyInputEl.addEventListener("input", () => clearError(personId, "company"));
+          countryInputEl.addEventListener("input", () => clearError(personId, "country"));
+
+          [companyInputEl, countryInputEl].forEach((inputEl) => {
+            inputEl.addEventListener("keydown", (event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                logApplication(personId);
+              }
+            });
+          });
+        });
+
+        document.querySelectorAll(".stat-card").forEach((card) => {
+          const personId = card.dataset.person;
+          statRefs[personId] = {
+            totalEl: card.querySelector('[data-role="stat-total"]'),
+            shareEl: card.querySelector('[data-role="stat-share"]'),
+            latestEl: card.querySelector('[data-role="stat-latest"]'),
+            histogramEl: card.querySelector('[data-role="histogram"]'),
+          };
+        });
+
+        initialRender();
+
+        function createDefaultState() {
+          return PEOPLE.reduce((acc, person) => {
+            acc[person.id] = { count: 0, applications: [] };
+            return acc;
+          }, {});
+        }
+
+        function loadState() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            const normalized = createDefaultState();
+            PEOPLE.forEach(({ id }) => {
+              const personData = parsed[id];
+              if (!personData) return;
+              const savedApps = Array.isArray(personData.applications) ? personData.applications : [];
+              normalized[id].applications = savedApps
+                .filter((entry) => entry.company && entry.country)
+                .slice(0, MAX_RECENT_ENTRIES)
+                .map((entry) => ({
+                  company: entry.company,
+                  country: entry.country,
+                  timestamp: entry.timestamp ?? new Date().toISOString(),
+                }));
+              const savedCount = typeof personData.count === "number" ? personData.count : normalized[id].applications.length;
+              normalized[id].count = savedCount;
+            });
+            return normalized;
+          } catch (error) {
+            console.warn("Unable to load saved tracker data", error);
+            return null;
+          }
+        }
+
+        function persistState() {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          } catch (error) {
+            console.warn("Unable to save tracker data", error);
+          }
+        }
+
+        function initialRender() {
+          PEOPLE.forEach(({ id }) => {
+            updatePersonCard(id);
+          });
+          updateStats();
+        }
+
+        function logApplication(personId) {
+          const refs = cardRefs[personId];
+          const company = refs.companyInputEl.value.trim();
+          const country = refs.countryInputEl.value.trim();
+
+          const missingCompany = !company;
+          const missingCountry = !country;
+
+          if (missingCompany || missingCountry) {
+            showError(personId, { missingCompany, missingCountry });
+            return;
+          }
+
+          state[personId].count += 1;
+          state[personId].applications.unshift({
+            company,
+            country,
+            timestamp: new Date().toISOString(),
+          });
+
+          if (state[personId].applications.length > MAX_RECENT_ENTRIES) {
+            state[personId].applications.length = MAX_RECENT_ENTRIES;
+          }
+
+          refs.companyInputEl.value = "";
+          refs.countryInputEl.value = "";
+          clearError(personId);
+          updatePersonCard(personId);
+          updateStats();
+          persistState();
+        }
+
+        function showError(personId, { missingCompany, missingCountry }) {
+          const refs = cardRefs[personId];
+          if (missingCompany) {
+            refs.companyInputEl.classList.add("has-error");
+          }
+          if (missingCountry) {
+            refs.countryInputEl.classList.add("has-error");
+          }
+          refs.errorEl.classList.add("is-visible");
+          const focusTarget = missingCompany ? refs.companyInputEl : refs.countryInputEl;
+          focusTarget.focus();
+        }
+
+        function clearError(personId, field) {
+          const refs = cardRefs[personId];
+          if (!field || field === "company") {
+            refs.companyInputEl.classList.remove("has-error");
+          }
+          if (!field || field === "country") {
+            refs.countryInputEl.classList.remove("has-error");
+          }
+          if (
+            !refs.companyInputEl.classList.contains("has-error") &&
+            !refs.countryInputEl.classList.contains("has-error")
+          ) {
+            refs.errorEl.classList.remove("is-visible");
+          }
+        }
+
+        function updatePersonCard(personId) {
+          const refs = cardRefs[personId];
+          const person = state[personId];
+
+          refs.countEl.textContent = person.count;
+
+          refs.listEl.innerHTML = "";
+          if (person.applications.length === 0) {
+            const emptyLi = document.createElement("li");
+            emptyLi.textContent = "No applications yet";
+            emptyLi.classList.add("empty");
+            refs.listEl.appendChild(emptyLi);
+            return;
+          }
+
+          person.applications.slice(0, 5).forEach((entry) => {
+            const li = document.createElement("li");
+            const primaryRow = document.createElement("div");
+            primaryRow.className = "company-entry";
+
+            const companySpan = document.createElement("span");
+            companySpan.className = "company-name";
+            companySpan.textContent = entry.company;
+
+            const countrySpan = document.createElement("span");
+            countrySpan.className = "company-country";
+            countrySpan.textContent = entry.country;
+
+            const timestampSpan = document.createElement("span");
+            timestampSpan.className = "company-date";
+            timestampSpan.textContent = formatTimestamp(entry.timestamp);
+
+            primaryRow.append(companySpan, countrySpan);
+            li.append(primaryRow, timestampSpan);
+            refs.listEl.appendChild(li);
+          });
+        }
+
+        function updateStats() {
+          const totals = Object.values(state).map((person) => person.count);
+          const teamTotal = totals.reduce((sum, current) => sum + current, 0);
+
+          PEOPLE.forEach(({ id }) => {
+            const person = state[id];
+            const refs = statRefs[id];
+            refs.totalEl.textContent = person.count;
+            refs.shareEl.textContent = teamTotal ? `${Math.round((person.count / teamTotal) * 100)}%` : "0%";
+            const latest = person.applications[0];
+            refs.latestEl.textContent = latest ? `${latest.company} (${latest.country})` : "—";
+            renderHistogram(id);
+          });
+
+          teamTotalEl.textContent = teamTotal;
+        }
+
+        function renderHistogram(personId) {
+          const refs = statRefs[personId];
+          const person = state[personId];
+          const histogramEl = refs.histogramEl;
+          histogramEl.innerHTML = "";
+
+          if (!person.applications.length) {
+            const empty = document.createElement("p");
+            empty.className = "histogram-empty";
+            empty.textContent = "No companies yet";
+            histogramEl.appendChild(empty);
+            return;
+          }
+
+          const counts = person.applications.reduce((acc, entry) => {
+            acc[entry.company] = (acc[entry.company] || 0) + 1;
+            return acc;
+          }, {});
+
+          const histogramData = Object.entries(counts)
+            .map(([company, count]) => ({ company, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 6);
+
+          const maxCount = histogramData[0]?.count ?? 1;
+
+          histogramData.forEach((item) => {
+            const row = document.createElement("div");
+            row.className = "histogram-row";
+
+            const label = document.createElement("span");
+            label.className = "histogram-label";
+            label.textContent = item.company;
+
+            const barWrapper = document.createElement("div");
+            barWrapper.className = "histogram-bar-wrapper";
+
+            const bar = document.createElement("span");
+            bar.className = "histogram-bar";
+            bar.dataset.person = personId;
+            bar.style.width = `${Math.max((item.count / maxCount) * 100, 6)}%`;
+
+            const countEl = document.createElement("span");
+            countEl.className = "histogram-count";
+            countEl.textContent = item.count;
+
+            barWrapper.appendChild(bar);
+            row.append(label, barWrapper, countEl);
+            histogramEl.appendChild(row);
+          });
+        }
+
+        function formatTimestamp(value) {
+          const date = value instanceof Date ? value : new Date(value);
+          return date.toLocaleString(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
