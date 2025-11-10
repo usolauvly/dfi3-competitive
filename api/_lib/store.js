@@ -2,7 +2,7 @@ import { put, list } from "@vercel/blob";
 
 const STORAGE_KEY = "internship-tracker/state.json";
 const BLOB_OPTIONS = {
-  access: "private",
+  access: "public",
   addRandomSuffix: false,
   contentType: "application/json",
 };
