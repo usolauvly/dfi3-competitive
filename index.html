@@ -51,6 +51,41 @@
         color: var(--muted);
       }
 
+      .hero-media {
+        margin: 1.5rem 0 0;
+        border-radius: 1.25rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        background: var(--card);
+      }
+
+      .hero-media img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .audio-block {
+        margin: 1.5rem 0 0;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--card);
+        box-shadow: var(--shadow);
+      }
+
+      .audio-block label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+      }
+
+      audio {
+        width: 100%;
+        outline: none;
+      }
+
       .team-total {
         margin-top: 0.75rem;
         font-weight: 600;
@@ -359,6 +394,16 @@
         <p class="lead">Track the hustle between Lmatador, De Lorche, and Del Mundo. Log applications, keep tabs on company lists, and see who is leading.</p>
         <p class="team-total">Team total: <span data-role="team-total">0</span> applications</p>
         <p class="sync-status" data-role="sync-status">Syncing latest data…</p>
+        <figure class="hero-media">
+          <img src="./image.png" alt="Team snapshot for the internship race tracker" loading="lazy" />
+        </figure>
+        <div class="audio-block">
+          <label for="anthem-audio">Listen to “The Hanging Tree”</label>
+          <audio id="anthem-audio" controls preload="none">
+            <source src="./the-hanging-tree.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
       </header>
 
       <section class="tracker-grid">
