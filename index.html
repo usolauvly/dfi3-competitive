@@ -52,12 +52,13 @@
       }
 
       .hero-media {
-        margin: 1.5rem 0 0;
+        margin: 1.5rem auto 0;
         border-radius: 1.25rem;
         overflow: hidden;
         box-shadow: var(--shadow);
         border: 1px solid var(--border);
         background: var(--card);
+        max-width: 500px;
       }
 
       .hero-media img {
@@ -84,6 +85,14 @@
       audio {
         width: 100%;
         outline: none;
+      }
+
+      @media (min-width: 900px) {
+        .hero-media {
+          max-width: 280px;
+          margin-left: 0;
+          margin-right: 0;
+        }
       }
 
       .team-total {
