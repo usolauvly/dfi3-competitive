@@ -755,7 +755,7 @@
         }
 
         function setPeople(list) {
-          state.people = Array.isArray(list) ? list : [];
+          state.people = (Array.isArray(list) ? list : []).sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
           state.peopleMap = state.people.reduce((acc, person) => {
             acc[person.id] = person;
             return acc;
