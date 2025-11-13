@@ -17,16 +17,15 @@ export function createDefaultState() {
 }
 
 export function normalizeState(raw = {}) {
-  const base = createDefaultState();
-  PEOPLE.forEach((personId) => {
-    const payload = raw[personId];
-    if (!payload) {
-      return;
-    }
+  const normalized = {};
 
+  const assign = (personId, payload = {}) => {
     const applications = Array.isArray(payload.applications) ? payload.applications : [];
-    base[personId] = {
-      count: typeof payload.count === "number" ? payload.count : applications.length,
+    normalized[personId] = {
+      count:
+        typeof payload.count === "number"
+          ? payload.count
+          : Math.max(applications.length, normalized[personId]?.count ?? 0),
       applications: applications
         .filter((entry) => entry && entry.company && entry.country)
         .slice(0, MAX_RECENT_ENTRIES)
@@ -36,13 +35,22 @@ export function normalizeState(raw = {}) {
           timestamp: entry.timestamp ?? new Date().toISOString(),
         })),
     };
+  };
 
-    if (base[personId].applications.length > base[personId].count) {
-      base[personId].count = base[personId].applications.length;
+  PEOPLE.forEach((personId) => {
+    if (raw[personId]) {
+      assign(personId, raw[personId]);
+    } else if (!normalized[personId]) {
+      normalized[personId] = { count: 0, applications: [] };
     }
   });
 
-  return base;
+  Object.entries(raw).forEach(([personId, payload]) => {
+    if (!payload) return;
+    assign(personId, payload);
+  });
+
+  return normalized;
 }
 
 export async function readState() {
@@ -55,7 +63,11 @@ export async function readState() {
     if (!blobUrl) {
       throw new Error("State blob missing accessible URL");
     }
-    const response = await fetch(blobUrl, { cache: "no-store" });
+    const headers = {};
+    if (!blob.downloadUrl && process.env.BLOB_READ_WRITE_TOKEN) {
+      headers.Authorization = `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`;
+    }
+    const response = await fetch(blobUrl, { cache: "no-store", headers });
     if (!response.ok) {
       throw new Error(`Unable to download blob (${response.status})`);
     }

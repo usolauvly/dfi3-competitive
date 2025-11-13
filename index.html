@@ -4,18 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Internship Application Tracker</title>
+    
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f5f6fb;
-        --card: #ffffff;
-        --text: #1f2430;
-        --muted: #6c778a;
-        --border: #e1e4ec;
-        --accent-lmatador: #f58634;
-        --accent-de-lorche: #3d9ec9;
-        --accent-del-mundo: #6f63f6;
-        --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        --bg: #0c0300;
+        --bg-overlay: rgba(7, 0, 0, 0.7);
+        --card: rgba(20, 6, 2, 0.9);
+        --card-soft: rgba(255, 255, 255, 0.08);
+        --text: #fff6e8;
+        --muted: #f6c7a2;
+        --border: rgba(255, 255, 255, 0.15);
+        --accent: #ffb347;
+        --accent-strong: #ff6f3c;
+        --accent-soft: rgba(255, 152, 74, 0.25);
+        --shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
       }
 
       * {
@@ -24,75 +26,54 @@
 
       body {
         margin: 0;
-        padding: 0;
-        font-family: "Inter", "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: var(--bg);
+        min-height: 100vh;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--text);
+        background: var(--bg);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url("./fire.png") center/cover no-repeat;
+        filter: blur(14px) saturate(1.3) brightness(0.9);
+        z-index: -2;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 140, 66, 0.25), rgba(0, 0, 0, 0.85));
+        z-index: -1;
       }
 
       main {
         max-width: 1200px;
         margin: 0 auto;
         padding: 2.5rem 1.5rem 4rem;
+        position: relative;
       }
 
       header {
         margin-bottom: 2rem;
+        padding: 2rem;
+        border-radius: 24px;
+        background: var(--bg-overlay);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: var(--shadow);
       }
 
       h1 {
-        margin: 0 0 0.5rem;
-        font-size: clamp(2rem, 4vw, 2.75rem);
+        margin: 0 0 0.3rem;
+        font-size: clamp(2rem, 4vw, 3.2rem);
       }
 
       .lead {
         margin: 0;
         font-size: 1.05rem;
         color: var(--muted);
-      }
-
-      .hero-media {
-        margin: 1.5rem auto 0;
-        border-radius: 1.25rem;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
-        background: var(--card);
-        max-width: 500px;
-      }
-
-      .hero-media img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .audio-block {
-        margin: 1.5rem 0 0;
-        padding: 1rem 1.25rem;
-        border-radius: 1rem;
-        border: 1px solid var(--border);
-        background: var(--card);
-        box-shadow: var(--shadow);
-      }
-
-      .audio-block label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 0.35rem;
-      }
-
-      audio {
-        width: 100%;
-        outline: none;
-      }
-
-      @media (min-width: 900px) {
-        .hero-media {
-          max-width: 280px;
-          margin-left: 0;
-          margin-right: 0;
-        }
       }
 
       .team-total {
@@ -108,28 +89,149 @@
       }
 
       .sync-status[data-variant="success"] {
-        color: #15803d;
+        color: #84f197;
       }
 
       .sync-status[data-variant="error"] {
-        color: #c53030;
+        color: #ffc1c1;
       }
 
-      .tracker-grid,
-      .stats-grid {
+      .hero-media {
+        margin: 1.5rem auto 0;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        max-width: 500px;
+      }
+
+      .hero-media img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .audio-block {
+        margin: 1.5rem 0 0;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.35);
+        box-shadow: var(--shadow);
+      }
+
+      .audio-block label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+      }
+
+      audio {
+        width: 100%;
+        outline: none;
+      }
+
+      .auth-section[hidden],
+      .tracker-shell[hidden] {
+        display: none;
+      }
+
+      .auth-section {
+        margin-top: 2rem;
+      }
+
+      .auth-card {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.25rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+        border-radius: 24px;
+        background: var(--bg-overlay);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--shadow);
+      }
+
+      .auth-card h2 {
+        margin: 0 0 0.75rem;
+      }
+
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .auth-form label {
+        font-size: 0.9rem;
+        color: var(--muted);
+        display: block;
+      }
+
+      .auth-form input {
+        width: 100%;
+        margin-top: 0.25rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.65rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(0, 0, 0, 0.35);
+        color: var(--text);
+      }
+
+      .auth-form button {
+        margin-top: 0.5rem;
+      }
+
+      .auth-error {
+        min-height: 1.1rem;
+        font-size: 0.85rem;
+        color: #ffd5d5;
+        margin-top: 0.35rem;
+      }
+
+      .tracker-shell {
+        margin-top: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .tracker-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        border-radius: 16px;
+        background: var(--bg-overlay);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: var(--shadow);
+      }
+
+      .welcome-text {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .tracker-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+      }
+
+      .person-block {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
 
       .person-card,
       .stat-card {
         background: var(--card);
-        border-radius: 1rem;
-        padding: 1.25rem;
+        border-radius: 1.25rem;
+        padding: 1.5rem;
         box-shadow: var(--shadow);
-        border: 1px solid var(--border);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(6px);
       }
 
       .person-card header {
@@ -138,7 +240,7 @@
 
       .person-card h2 {
         margin: 0;
-        font-size: 1.35rem;
+        font-size: 1.4rem;
       }
 
       .count-label {
@@ -148,7 +250,7 @@
       }
 
       .count {
-        font-size: 2.25rem;
+        font-size: 2.4rem;
         font-weight: 700;
         margin: 0.15rem 0 0;
       }
@@ -158,10 +260,6 @@
         display: flex;
         flex-direction: column;
         gap: 0.85rem;
-      }
-
-      .input-block {
-        margin: 0;
       }
 
       .input-block label {
@@ -174,26 +272,26 @@
       .input-block input {
         width: 100%;
         padding: 0.65rem 0.75rem;
-        border: 1px solid var(--border);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         border-radius: 0.6rem;
         font-size: 0.95rem;
-        font-family: inherit;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
       }
 
       .input-block input:focus {
         outline: none;
-        border-color: #7c8eff;
-        box-shadow: 0 0 0 3px rgba(124, 142, 255, 0.15);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
       }
 
       .input-block input.has-error {
-        border-color: #f55555;
-        box-shadow: 0 0 0 3px rgba(245, 85, 85, 0.15);
+        border-color: #ff8a8a;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.25);
       }
 
       .input-error {
-        color: #c53030;
+        color: #ffd5d5;
         font-size: 0.85rem;
         margin: 0.35rem 0 0;
         display: none;
@@ -206,19 +304,19 @@
       button {
         width: 100%;
         padding: 0.75rem;
-        border-radius: 0.7rem;
+        border-radius: 0.8rem;
         border: none;
         cursor: pointer;
         font-weight: 600;
         font-size: 0.95rem;
-        color: #fff;
-        background: #1f9aa2;
+        color: #1b0500;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
         transition: transform 0.1s ease, box-shadow 0.2s ease;
       }
 
       button:hover {
         transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(31, 154, 162, 0.25);
+        box-shadow: 0 8px 25px rgba(255, 138, 80, 0.4);
       }
 
       button:active {
@@ -227,10 +325,18 @@
       }
 
       button:disabled {
-        opacity: 0.65;
+        opacity: 0.5;
         cursor: not-allowed;
         box-shadow: none;
         transform: none;
+      }
+
+      .logout-btn {
+        width: auto;
+        padding: 0.55rem 1.5rem;
+        color: var(--text);
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.15);
       }
 
       .company-list {
@@ -245,11 +351,10 @@
       .company-list li {
         padding: 0.65rem 0.75rem;
         border-radius: 0.65rem;
-        border: 1px dashed var(--border);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.25);
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        font-size: 0.9rem;
         gap: 0.35rem;
       }
 
@@ -264,14 +369,10 @@
         font-weight: 600;
       }
 
-      .company-country {
-        color: var(--muted);
-        font-size: 0.85rem;
-      }
-
+      .company-country,
       .company-date {
         color: var(--muted);
-        font-size: 0.8rem;
+        font-size: 0.85rem;
       }
 
       .company-list li.empty {
@@ -280,27 +381,59 @@
         font-style: italic;
       }
 
-      .stats-section h3 {
-        margin: 0 0 0.75rem;
+      .stats-panel {
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.35);
+        box-shadow: var(--shadow);
+        overflow: hidden;
       }
 
-      .stat-card h4 {
-        margin: 0 0 0.4rem;
+      .stats-panel summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        font-weight: 600;
+      }
+
+      .stats-panel summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .stats-panel summary span:last-child {
+        font-size: 0.9rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .stats-panel[open] summary {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      .stats-content {
+        padding: 0 1.25rem 1.25rem;
       }
 
       .stat-line {
         display: flex;
         justify-content: space-between;
         margin: 0.2rem 0;
-        color: var(--muted);
-        font-size: 0.9rem;
+      }
+
+      .stat-line span:last-child {
+        font-weight: 600;
       }
 
       .histogram {
         margin-top: 0.9rem;
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.45rem;
       }
 
       .histogram-heading {
@@ -330,7 +463,7 @@
         position: relative;
         height: 0.45rem;
         border-radius: 999px;
-        background: rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.15);
         overflow: hidden;
       }
 
@@ -338,7 +471,7 @@
         display: block;
         height: 100%;
         border-radius: inherit;
-        background: var(--text);
+        background: linear-gradient(90deg, var(--accent), var(--accent-strong));
         transition: width 0.2s ease;
       }
 
@@ -355,46 +488,35 @@
         font-style: italic;
       }
 
-      .stat-card[data-person="lmatador"] .histogram-bar {
-        background: var(--accent-lmatador);
+      .person-card.is-locked .input-stack,
+      .person-card.is-locked button {
+        opacity: 0.35;
+        pointer-events: none;
       }
 
-      .stat-card[data-person="de-lorche"] .histogram-bar {
-        background: var(--accent-de-lorche);
+      .person-card.is-locked .lock-note {
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--muted);
       }
 
-      .stat-card[data-person="del-mundo"] .histogram-bar {
-        background: var(--accent-del-mundo);
+      .empty-feed {
+        padding: 2rem;
+        text-align: center;
+        border-radius: 1rem;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
       }
 
-      .stat-line span:last-child {
-        color: var(--text);
-        font-weight: 600;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0f172a;
-          --card: #0f192f;
-          --text: #f1f5f9;
-          --muted: #94a3b8;
-          --border: #1e293b;
-          --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        button {
-          background: #28afc2;
-        }
-
-        .company-list li {
-          border-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .histogram-bar-wrapper {
-          background: rgba(255, 255, 255, 0.12);
+      @media (min-width: 900px) {
+        .hero-media {
+          max-width: 280px;
+          margin-left: 0;
+          margin-right: 0;
         }
       }
     </style>
+
   </head>
   <body>
     <main>
@@ -415,406 +537,686 @@
         </div>
       </header>
 
-      <section class="tracker-grid">
-        <article class="person-card" data-person="lmatador">
-          <header>
-            <h2>Lmatador</h2>
-            <p class="count-label">Applications logged</p>
-            <p class="count" data-role="count">0</p>
-          </header>
-          <div class="input-stack">
-            <div class="input-block">
-              <label for="company-lmatador">Company name</label>
-              <input type="text" id="company-lmatador" placeholder="e.g., SpaceY" data-role="company-input" autocomplete="off" />
-            </div>
-            <div class="input-block">
-              <label for="country-lmatador">Country</label>
-              <input type="text" id="country-lmatador" placeholder="e.g., Canada" data-role="country-input" autocomplete="off" />
-            </div>
-            <p class="input-error" data-role="input-error">Add both the company and country before logging.</p>
+      <section class="auth-section" data-role="auth-screen">
+        <div class="auth-card">
+          <div>
+            <h2>Sign in</h2>
+            <form class="auth-form" data-role="login-form">
+              <label>
+                Username
+                <input type="text" name="username" autocomplete="username" required />
+              </label>
+              <label>
+                Password
+                <input type="password" name="password" autocomplete="current-password" required />
+              </label>
+              <button type="submit">Log in</button>
+            </form>
+            <p class="auth-error" data-role="login-error"></p>
           </div>
-          <button type="button" data-role="add-btn">Add application</button>
-          <ul class="company-list" data-role="company-list">
-            <li class="empty">No applications yet</li>
-          </ul>
-        </article>
-
-        <article class="person-card" data-person="de-lorche">
-          <header>
-            <h2>De Lorche</h2>
-            <p class="count-label">Applications logged</p>
-            <p class="count" data-role="count">0</p>
-          </header>
-          <div class="input-stack">
-            <div class="input-block">
-              <label for="company-de-lorche">Company name</label>
-              <input type="text" id="company-de-lorche" placeholder="e.g., DeepCore Labs" data-role="company-input" autocomplete="off" />
-            </div>
-            <div class="input-block">
-              <label for="country-de-lorche">Country</label>
-              <input type="text" id="country-de-lorche" placeholder="e.g., Brazil" data-role="country-input" autocomplete="off" />
-            </div>
-            <p class="input-error" data-role="input-error">Add both the company and country before logging.</p>
+          <div>
+            <h2>Create account</h2>
+            <form class="auth-form" data-role="register-form">
+              <label>
+                First name
+                <input type="text" name="firstName" autocomplete="given-name" required />
+              </label>
+              <label>
+                Family name
+                <input type="text" name="lastName" autocomplete="family-name" required />
+              </label>
+              <label>
+                Username
+                <input type="text" name="username" autocomplete="username" required />
+              </label>
+              <label>
+                Password
+                <input type="password" name="password" autocomplete="new-password" required />
+              </label>
+              <button type="submit">Create account</button>
+            </form>
+            <p class="auth-error" data-role="register-error"></p>
           </div>
-          <button type="button" data-role="add-btn">Add application</button>
-          <ul class="company-list" data-role="company-list">
-            <li class="empty">No applications yet</li>
-          </ul>
-        </article>
-
-        <article class="person-card" data-person="del-mundo">
-          <header>
-            <h2>Del Mundo</h2>
-            <p class="count-label">Applications logged</p>
-            <p class="count" data-role="count">0</p>
-          </header>
-          <div class="input-stack">
-            <div class="input-block">
-              <label for="company-del-mundo">Company name</label>
-              <input type="text" id="company-del-mundo" placeholder="e.g., FutureWorks" data-role="company-input" autocomplete="off" />
-            </div>
-            <div class="input-block">
-              <label for="country-del-mundo">Country</label>
-              <input type="text" id="country-del-mundo" placeholder="e.g., Japan" data-role="country-input" autocomplete="off" />
-            </div>
-            <p class="input-error" data-role="input-error">Add both the company and country before logging.</p>
-          </div>
-          <button type="button" data-role="add-btn">Add application</button>
-          <ul class="company-list" data-role="company-list">
-            <li class="empty">No applications yet</li>
-          </ul>
-        </article>
+        </div>
       </section>
 
-      <section class="stats-section">
-        <h3>Stats by person</h3>
-        <div class="stats-grid">
-          <article class="stat-card" data-person="lmatador">
-            <h4>Lmatador</h4>
-            <p class="stat-line"><span>Total logged</span><span data-role="stat-total">0</span></p>
-            <p class="stat-line"><span>Share of total</span><span data-role="stat-share">0%</span></p>
-            <p class="stat-line"><span>Latest application</span><span data-role="stat-latest">—</span></p>
-            <p class="histogram-heading">Top countries</p>
-            <div class="histogram" data-role="histogram">
-              <p class="histogram-empty">No countries yet</p>
-            </div>
-          </article>
-          <article class="stat-card" data-person="de-lorche">
-            <h4>De Lorche</h4>
-            <p class="stat-line"><span>Total logged</span><span data-role="stat-total">0</span></p>
-            <p class="stat-line"><span>Share of total</span><span data-role="stat-share">0%</span></p>
-            <p class="stat-line"><span>Latest application</span><span data-role="stat-latest">—</span></p>
-            <p class="histogram-heading">Top countries</p>
-            <div class="histogram" data-role="histogram">
-              <p class="histogram-empty">No countries yet</p>
-            </div>
-          </article>
-          <article class="stat-card" data-person="del-mundo">
-            <h4>Del Mundo</h4>
-            <p class="stat-line"><span>Total logged</span><span data-role="stat-total">0</span></p>
-            <p class="stat-line"><span>Share of total</span><span data-role="stat-share">0%</span></p>
-            <p class="stat-line"><span>Latest application</span><span data-role="stat-latest">—</span></p>
-            <p class="histogram-heading">Top countries</p>
-            <div class="histogram" data-role="histogram">
-              <p class="histogram-empty">No countries yet</p>
-            </div>
-          </article>
+      <section class="tracker-shell" data-role="tracker-screen" hidden>
+        <div class="tracker-actions">
+          <p class="welcome-text">
+            Signed in as <strong data-role="current-user-name">—</strong>
+          </p>
+          <button type="button" class="logout-btn" data-role="logout-btn">Log out</button>
         </div>
+        <section class="tracker-feed" data-role="tracker-feed">
+          <p class="empty-feed">Loading teammates…</p>
+        </section>
       </section>
     </main>
 
+    
     <script>
       (() => {
-        const PEOPLE = [
-          { id: "lmatador", name: "Lmatador" },
-          { id: "de-lorche", name: "De Lorche" },
-          { id: "del-mundo", name: "Del Mundo" },
-        ];
-        const MAX_RECENT_ENTRIES = 30;
         const API = {
           state: "/api/state",
           log: "/api/log",
+          login: "/api/auth/login",
+          register: "/api/auth/register",
+          me: "/api/auth/me",
         };
 
-        let state = createDefaultState();
+        const STORAGE_KEYS = {
+          auth: "tracker.auth",
+        };
 
-        const cardRefs = {};
-        const statRefs = {};
+        const state = {
+          auth: loadStoredAuth(),
+          people: [],
+          peopleMap: {},
+          cardRefs: {},
+          statRefs: {},
+        };
 
-        const teamTotalEl = document.querySelector('[data-role="team-total"]');
-        const syncStatusEl = document.querySelector('[data-role="sync-status"]');
+        const els = {
+          teamTotal: document.querySelector('[data-role="team-total"]'),
+          syncStatus: document.querySelector('[data-role="sync-status"]'),
+          authScreen: document.querySelector('[data-role="auth-screen"]'),
+          trackerScreen: document.querySelector('[data-role="tracker-screen"]'),
+          loginForm: document.querySelector('[data-role="login-form"]'),
+          registerForm: document.querySelector('[data-role="register-form"]'),
+          loginError: document.querySelector('[data-role="login-error"]'),
+          registerError: document.querySelector('[data-role="register-error"]'),
+          logoutBtn: document.querySelector('[data-role="logout-btn"]'),
+          currentUserName: document.querySelector('[data-role="current-user-name"]'),
+          trackerFeed: document.querySelector('[data-role="tracker-feed"]'),
+        };
 
-        document.querySelectorAll(".person-card").forEach((card) => {
-          const personId = card.dataset.person;
+        init();
 
-          cardRefs[personId] = {
-            countEl: card.querySelector('[data-role="count"]'),
-            companyInputEl: card.querySelector('[data-role="company-input"]'),
-            countryInputEl: card.querySelector('[data-role="country-input"]'),
-            listEl: card.querySelector('[data-role="company-list"]'),
-            errorEl: card.querySelector('[data-role="input-error"]'),
-            buttonEl: card.querySelector('[data-role="add-btn"]'),
-          };
+        function init() {
+          initForms();
+          bootstrap();
+        }
 
-          const { companyInputEl, countryInputEl } = cardRefs[personId];
-          cardRefs[personId].buttonEl.addEventListener("click", () => logApplication(personId));
-
-          companyInputEl.addEventListener("input", () => clearError(personId, "company"));
-          countryInputEl.addEventListener("input", () => clearError(personId, "country"));
-
-          [companyInputEl, countryInputEl].forEach((inputEl) => {
-            inputEl.addEventListener("keydown", (event) => {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                logApplication(personId);
-              }
-            });
-          });
-        });
-
-        document.querySelectorAll(".stat-card").forEach((card) => {
-          const personId = card.dataset.person;
-          statRefs[personId] = {
-            totalEl: card.querySelector('[data-role="stat-total"]'),
-            shareEl: card.querySelector('[data-role="stat-share"]'),
-            latestEl: card.querySelector('[data-role="stat-latest"]'),
-            histogramEl: card.querySelector('[data-role="histogram"]'),
-          };
-        });
-
-        renderAll();
-        refreshFromServer();
-
-        async function refreshFromServer() {
-          setSyncStatus("Syncing latest data…", "info");
-          try {
-            const remoteState = await fetchJson(API.state);
-            applyState(remoteState);
-            setSyncStatus("Up to date", "success");
-          } catch (error) {
-            console.warn("Unable to sync from server", error);
-            setSyncStatus("Offline — data may be stale.", "error");
+        async function bootstrap() {
+          if (state.auth.token) {
+            await refreshSession();
+          }
+          updateScreens();
+          if (state.auth.user) {
+            await refreshFromServer();
+          } else {
+            setSyncStatus("Sign in to access the tracker", "error");
           }
         }
 
-        async function logApplication(personId) {
-          const refs = cardRefs[personId];
-          const company = refs.companyInputEl.value.trim();
-          const country = refs.countryInputEl.value.trim();
+        function initForms() {
+          els.loginForm?.addEventListener("submit", handleLoginSubmit);
+          els.registerForm?.addEventListener("submit", handleRegisterSubmit);
+          els.logoutBtn?.addEventListener("click", handleLogout);
+        }
 
-          const missingCompany = !company;
-          const missingCountry = !country;
-
-          if (missingCompany || missingCountry) {
-            showError(personId, { missingCompany, missingCountry });
+        async function handleLoginSubmit(event) {
+          event.preventDefault();
+          if (!els.loginForm) return;
+          clearErrorMessage(els.loginError);
+          const formData = new FormData(els.loginForm);
+          const payload = {
+            username: String(formData.get("username") || "").trim(),
+            password: String(formData.get("password") || "").trim(),
+          };
+          if (!payload.username || !payload.password) {
+            setErrorMessage(els.loginError, "Enter your username and password");
             return;
           }
-
-          setButtonLoading(personId, true);
-          setSyncStatus("Saving application…", "info");
-
+          const button = els.loginForm.querySelector("button[type=submit]");
+          if (button) button.disabled = true;
           try {
-            const payload = { personId, company, country };
-            const updatedState = await fetchJson(API.log, {
+            const response = await fetchJson(API.login, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
             });
-            refs.companyInputEl.value = "";
-            refs.countryInputEl.value = "";
-            clearError(personId);
-            applyState(updatedState);
-            setSyncStatus("Synced just now", "success");
+            setAuth(response);
+            els.loginForm.reset();
+            await refreshFromServer();
           } catch (error) {
-            console.error("Unable to log application", error);
-            setSyncStatus("Could not save. Check your connection and retry.", "error");
+            setErrorMessage(els.loginError, error.message);
           } finally {
-            setButtonLoading(personId, false);
+            if (button) button.disabled = false;
           }
         }
 
-        function applyState(nextState) {
-          state = normalizeIncomingState(nextState);
-          renderAll();
+        async function handleRegisterSubmit(event) {
+          event.preventDefault();
+          if (!els.registerForm) return;
+          clearErrorMessage(els.registerError);
+          const formData = new FormData(els.registerForm);
+          const payload = {
+            firstName: String(formData.get("firstName") || "").trim(),
+            lastName: String(formData.get("lastName") || "").trim(),
+            username: String(formData.get("username") || "").trim(),
+            password: String(formData.get("password") || "").trim(),
+          };
+          if (!payload.firstName || !payload.lastName || !payload.username || !payload.password) {
+            setErrorMessage(els.registerError, "Fill out every field");
+            return;
+          }
+          const button = els.registerForm.querySelector("button[type=submit]");
+          if (button) button.disabled = true;
+          try {
+            const response = await fetchJson(API.register, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            setAuth(response);
+            els.registerForm.reset();
+            await refreshFromServer();
+          } catch (error) {
+            setErrorMessage(els.registerError, error.message);
+          } finally {
+            if (button) button.disabled = false;
+          }
         }
 
-        function createDefaultState() {
-          return PEOPLE.reduce((acc, { id }) => {
-            acc[id] = { count: 0, applications: [] };
+        function handleLogout() {
+          clearAuth();
+          updateScreens();
+          state.people = [];
+          renderPeople();
+          setSyncStatus("Signed out", "info");
+        }
+
+        async function refreshSession() {
+          try {
+            const response = await fetchJson(API.me, { auth: true });
+            setAuth({ token: state.auth.token, user: response.user });
+          } catch (error) {
+            clearAuth();
+            console.warn("Session check failed", error);
+          }
+        }
+
+        async function refreshFromServer() {
+          if (!state.auth.user) {
+            return;
+          }
+          setSyncStatus("Syncing latest data…", "info");
+          try {
+            const payload = await fetchJson(API.state);
+            setPeople(payload.people ?? []);
+            renderPeople();
+            updateTeamTotal(payload.teamTotal ?? 0);
+            setSyncStatus("Up to date", "success");
+          } catch (error) {
+            console.warn("Unable to sync from server", error);
+            setSyncStatus("Unable to sync data right now", "error");
+          }
+        }
+
+        function setPeople(list) {
+          state.people = Array.isArray(list) ? list : [];
+          state.peopleMap = state.people.reduce((acc, person) => {
+            acc[person.id] = person;
             return acc;
           }, {});
         }
 
-        function normalizeIncomingState(raw = {}) {
-          const base = createDefaultState();
-          PEOPLE.forEach(({ id }) => {
-            const data = raw[id];
-            if (!data) {
-              return;
-            }
-            const entries = Array.isArray(data.applications) ? data.applications : [];
-            base[id] = {
-              count: typeof data.count === "number" ? data.count : entries.length,
-              applications: entries
-                .filter((entry) => entry && entry.company && entry.country)
-                .slice(0, MAX_RECENT_ENTRIES)
-                .map((entry) => ({
-                  company: entry.company,
-                  country: entry.country,
-                  timestamp: entry.timestamp ?? new Date().toISOString(),
-                })),
-            };
+        function renderPeople() {
+          if (!els.trackerFeed) return;
+          els.trackerFeed.innerHTML = "";
+          state.cardRefs = {};
+          state.statRefs = {};
+          if (!state.people.length) {
+            const empty = document.createElement("p");
+            empty.className = "empty-feed";
+            empty.textContent = state.auth.user ? "No teammates yet" : "Sign in to view feeds";
+            els.trackerFeed.appendChild(empty);
+            updateTeamTotal(0);
+            return;
+          }
+          state.people.forEach((person) => {
+            const block = buildPersonBlock(person);
+            els.trackerFeed.appendChild(block);
           });
-          return base;
-        }
-
-        function renderAll() {
-          PEOPLE.forEach(({ id }) => updatePersonCard(id));
+          state.people.forEach((person) => {
+            updatePersonCard(person.id);
+          });
           updateStats();
         }
 
-        function showError(personId, { missingCompany, missingCountry }) {
-          const refs = cardRefs[personId];
-          if (missingCompany) {
-            refs.companyInputEl.classList.add("has-error");
+        function buildPersonBlock(person) {
+          const isOwner = state.auth.user?.personId === person.id;
+          const block = document.createElement("article");
+          block.className = "person-block";
+          block.dataset.person = person.id;
+
+          const card = document.createElement("div");
+          card.className = "person-card";
+          if (!isOwner) {
+            card.classList.add("is-locked");
           }
-          if (missingCountry) {
-            refs.countryInputEl.classList.add("has-error");
+
+          const header = document.createElement("header");
+          const title = document.createElement("h2");
+          title.textContent = person.displayName;
+          const label = document.createElement("p");
+          label.className = "count-label";
+          label.textContent = "Applications logged";
+          const countEl = document.createElement("p");
+          countEl.className = "count";
+          countEl.dataset.role = "count";
+          countEl.textContent = "0";
+          header.append(title, label, countEl);
+          card.appendChild(header);
+
+          let companyInputEl = null;
+          let countryInputEl = null;
+          let errorEl = null;
+          let buttonEl = null;
+
+          if (isOwner) {
+            const stack = document.createElement("div");
+            stack.className = "input-stack";
+
+            const companyBlock = document.createElement("div");
+            companyBlock.className = "input-block";
+            const companyLabel = document.createElement("label");
+            companyLabel.textContent = "Company name";
+            companyInputEl = document.createElement("input");
+            companyInputEl.type = "text";
+            companyInputEl.placeholder = "e.g., SunCore Labs";
+            companyInputEl.autocomplete = "off";
+            companyInputEl.dataset.role = "company-input";
+            companyLabel.appendChild(companyInputEl);
+            companyBlock.appendChild(companyLabel);
+
+            const countryBlock = document.createElement("div");
+            countryBlock.className = "input-block";
+            const countryLabel = document.createElement("label");
+            countryLabel.textContent = "Country";
+            countryInputEl = document.createElement("input");
+            countryInputEl.type = "text";
+            countryInputEl.placeholder = "e.g., Spain";
+            countryInputEl.autocomplete = "off";
+            countryInputEl.dataset.role = "country-input";
+            countryLabel.appendChild(countryInputEl);
+            countryBlock.appendChild(countryLabel);
+
+            errorEl = document.createElement("p");
+            errorEl.className = "input-error";
+            errorEl.dataset.role = "input-error";
+            errorEl.textContent = "Add both the company and country before logging.";
+
+            stack.append(companyBlock, countryBlock, errorEl);
+            card.appendChild(stack);
+
+            buttonEl = document.createElement("button");
+            buttonEl.type = "button";
+            buttonEl.dataset.role = "add-btn";
+            buttonEl.textContent = "Add application";
+            buttonEl.addEventListener("click", () => logApplication(person.id));
+
+            const handleInput = (field) => () => clearError(person.id, field);
+            companyInputEl.addEventListener("input", handleInput("company"));
+            countryInputEl.addEventListener("input", handleInput("country"));
+            [companyInputEl, countryInputEl].forEach((inputEl) => {
+              inputEl.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  logApplication(person.id);
+                }
+              });
+            });
+
+            card.appendChild(buttonEl);
+          } else {
+            const note = document.createElement("p");
+            note.className = "lock-note";
+            note.textContent = `Only ${person.displayName} can log here.`;
+            card.appendChild(note);
           }
-          refs.errorEl.classList.add("is-visible");
-          (missingCompany ? refs.companyInputEl : refs.countryInputEl).focus();
+
+          const listEl = document.createElement("ul");
+          listEl.className = "company-list";
+          listEl.dataset.role = "company-list";
+          const emptyItem = document.createElement("li");
+          emptyItem.className = "empty";
+          emptyItem.textContent = "No applications yet";
+          listEl.appendChild(emptyItem);
+          card.appendChild(listEl);
+
+          block.appendChild(card);
+
+          const statsPanel = document.createElement("details");
+          statsPanel.className = "stats-panel";
+          const summary = document.createElement("summary");
+          const summaryLabel = document.createElement("span");
+          summaryLabel.textContent = `Stats for ${person.displayName}`;
+          const summaryValue = document.createElement("span");
+          summaryValue.dataset.role = "stat-summary";
+          summaryValue.textContent = "0 apps · 0%";
+          summary.append(summaryLabel, summaryValue);
+          statsPanel.appendChild(summary);
+
+          const statsContent = document.createElement("div");
+          statsContent.className = "stats-content";
+          const statCard = document.createElement("div");
+          statCard.className = "stat-card";
+
+          const totalLine = createStatLine("Total logged");
+          const shareLine = createStatLine("Share of total");
+          const latestLine = createStatLine("Latest application");
+          const totalValue = totalLine.querySelector("span:last-child");
+          const shareValue = shareLine.querySelector("span:last-child");
+          const latestValue = latestLine.querySelector("span:last-child");
+          shareValue.textContent = "0%";
+          latestValue.textContent = "—";
+
+          const histHeading = document.createElement("p");
+          histHeading.className = "histogram-heading";
+          histHeading.textContent = "Top countries";
+
+          const histogramEl = document.createElement("div");
+          histogramEl.className = "histogram";
+          const histogramEmpty = document.createElement("p");
+          histogramEmpty.className = "histogram-empty";
+          histogramEmpty.textContent = "No countries yet";
+          histogramEl.appendChild(histogramEmpty);
+
+          statCard.append(totalLine, shareLine, latestLine, histHeading, histogramEl);
+          statsContent.appendChild(statCard);
+          statsPanel.appendChild(statsContent);
+          block.appendChild(statsPanel);
+
+          state.cardRefs[person.id] = {
+            countEl,
+            companyInputEl,
+            countryInputEl,
+            errorEl,
+            buttonEl,
+            listEl,
+          };
+
+          state.statRefs[person.id] = {
+            summaryEl: summaryValue,
+            totalEl: totalValue,
+            shareEl: shareValue,
+            latestEl: latestValue,
+            histogramEl,
+          };
+
+          return block;
         }
 
-        function clearError(personId, field) {
-          const refs = cardRefs[personId];
-          if (!field || field === "company") {
-            refs.companyInputEl.classList.remove("has-error");
-          }
-          if (!field || field === "country") {
-            refs.countryInputEl.classList.remove("has-error");
-          }
-          if (
-            !refs.companyInputEl.classList.contains("has-error") &&
-            !refs.countryInputEl.classList.contains("has-error")
-          ) {
-            refs.errorEl.classList.remove("is-visible");
-          }
-        }
-
-        function setButtonLoading(personId, isLoading) {
-          const button = cardRefs[personId].buttonEl;
-          button.disabled = isLoading;
+        function createStatLine(label) {
+          const p = document.createElement("p");
+          p.className = "stat-line";
+          const left = document.createElement("span");
+          left.textContent = label;
+          const right = document.createElement("span");
+          right.textContent = "0";
+          p.append(left, right);
+          return p;
         }
 
         function updatePersonCard(personId) {
-          const refs = cardRefs[personId];
-          const person = state[personId];
-
-          refs.countEl.textContent = person.count;
-
+          const person = state.peopleMap[personId];
+          const refs = state.cardRefs[personId];
+          if (!person || !refs) return;
+          refs.countEl.textContent = person.count ?? 0;
           refs.listEl.innerHTML = "";
-          if (person.applications.length === 0) {
-            const emptyLi = document.createElement("li");
-            emptyLi.textContent = "No applications yet";
-            emptyLi.classList.add("empty");
-            refs.listEl.appendChild(emptyLi);
+          const entries = Array.isArray(person.applications) ? person.applications : [];
+          if (!entries.length) {
+            const empty = document.createElement("li");
+            empty.className = "empty";
+            empty.textContent = "No applications yet";
+            refs.listEl.appendChild(empty);
             return;
           }
-
-          person.applications.slice(0, 5).forEach((entry) => {
+          entries.slice(0, 5).forEach((entry) => {
             const li = document.createElement("li");
-            const primaryRow = document.createElement("div");
-            primaryRow.className = "company-entry";
-
+            const row = document.createElement("div");
+            row.className = "company-entry";
             const companySpan = document.createElement("span");
             companySpan.className = "company-name";
             companySpan.textContent = entry.company;
-
             const countrySpan = document.createElement("span");
             countrySpan.className = "company-country";
             countrySpan.textContent = entry.country;
-
             const timestampSpan = document.createElement("span");
             timestampSpan.className = "company-date";
             timestampSpan.textContent = formatTimestamp(entry.timestamp);
-
-            primaryRow.append(companySpan, countrySpan);
-            li.append(primaryRow, timestampSpan);
+            row.append(companySpan, countrySpan);
+            li.append(row, timestampSpan);
             refs.listEl.appendChild(li);
           });
         }
 
         function updateStats() {
-          const totals = Object.values(state).map((person) => person.count);
-          const teamTotal = totals.reduce((sum, current) => sum + current, 0);
-
-          PEOPLE.forEach(({ id }) => {
-            const person = state[id];
-            const refs = statRefs[id];
-            refs.totalEl.textContent = person.count;
-            refs.shareEl.textContent = teamTotal ? `${Math.round((person.count / teamTotal) * 100)}%` : "0%";
-            const latest = person.applications[0];
+          const teamTotal = state.people.reduce((sum, person) => sum + (person.count ?? 0), 0);
+          updateTeamTotal(teamTotal);
+          state.people.forEach((person) => {
+            const refs = state.statRefs[person.id];
+            if (!refs) return;
+            const share = teamTotal ? Math.round((person.count / teamTotal) * 100) : 0;
+            refs.totalEl.textContent = person.count ?? 0;
+            refs.shareEl.textContent = `${share}%`;
+            refs.summaryEl.textContent = `${person.count ?? 0} ${(person.count ?? 0) === 1 ? "app" : "apps"} · ${share}%`;
+            const latest = person.applications?.[0];
             refs.latestEl.textContent = latest ? `${latest.company} (${latest.country})` : "—";
-            renderHistogram(id);
+            renderHistogram(person.id);
           });
-
-          teamTotalEl.textContent = teamTotal;
         }
 
         function renderHistogram(personId) {
-          const refs = statRefs[personId];
-          const person = state[personId];
+          const refs = state.statRefs[personId];
+          const person = state.peopleMap[personId];
+          if (!refs || !person) return;
           const histogramEl = refs.histogramEl;
           histogramEl.innerHTML = "";
-
-          if (!person.applications.length) {
+          const entries = Array.isArray(person.applications) ? person.applications : [];
+          if (!entries.length) {
             const empty = document.createElement("p");
             empty.className = "histogram-empty";
             empty.textContent = "No countries yet";
             histogramEl.appendChild(empty);
             return;
           }
-
-          const counts = person.applications.reduce((acc, entry) => {
-            const country = entry.country || "Unknown";
-            acc[country] = (acc[country] || 0) + 1;
+          const counts = entries.reduce((acc, entry) => {
+            const key = entry.country || "Unknown";
+            acc[key] = (acc[key] || 0) + 1;
             return acc;
           }, {});
-
-          const histogramData = Object.entries(counts)
-            .map(([country, count]) => ({ label: country, count }))
+          const rows = Object.entries(counts)
+            .map(([country, count]) => ({ country, count }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 6);
-
-          const maxCount = histogramData[0]?.count ?? 1;
-
-          histogramData.forEach((item) => {
+          const maxCount = rows[0]?.count ?? 1;
+          rows.forEach((item) => {
             const row = document.createElement("div");
             row.className = "histogram-row";
-
             const label = document.createElement("span");
             label.className = "histogram-label";
-            label.textContent = item.label;
-
+            label.textContent = item.country;
             const barWrapper = document.createElement("div");
             barWrapper.className = "histogram-bar-wrapper";
-
             const bar = document.createElement("span");
             bar.className = "histogram-bar";
             bar.style.width = `${Math.max((item.count / maxCount) * 100, 6)}%`;
-
+            barWrapper.appendChild(bar);
             const countEl = document.createElement("span");
             countEl.className = "histogram-count";
             countEl.textContent = item.count;
-
-            barWrapper.appendChild(bar);
             row.append(label, barWrapper, countEl);
             histogramEl.appendChild(row);
           });
         }
 
+        function updateTeamTotal(value) {
+          if (!els.teamTotal) return;
+          els.teamTotal.textContent = value;
+        }
+
+        function setSyncStatus(message, variant = "info") {
+          if (!els.syncStatus) return;
+          els.syncStatus.textContent = message;
+          els.syncStatus.dataset.variant = variant;
+        }
+
+        function showError(personId, missing) {
+          const refs = state.cardRefs[personId];
+          if (!refs) return;
+          if (missing.company && refs.companyInputEl) {
+            refs.companyInputEl.classList.add("has-error");
+            refs.companyInputEl.focus();
+          }
+          if (missing.country && refs.countryInputEl) {
+            refs.countryInputEl.classList.add("has-error");
+            if (!missing.company) refs.countryInputEl.focus();
+          }
+          refs.errorEl?.classList.add("is-visible");
+        }
+
+        function clearError(personId, field) {
+          const refs = state.cardRefs[personId];
+          if (!refs) return;
+          if ((!field || field === "company") && refs.companyInputEl) {
+            refs.companyInputEl.classList.remove("has-error");
+          }
+          if ((!field || field === "country") && refs.countryInputEl) {
+            refs.countryInputEl.classList.remove("has-error");
+          }
+          if (
+            refs.errorEl &&
+            (!refs.companyInputEl || !refs.companyInputEl.classList.contains("has-error")) &&
+            (!refs.countryInputEl || !refs.countryInputEl.classList.contains("has-error"))
+          ) {
+            refs.errorEl.classList.remove("is-visible");
+          }
+        }
+
+        async function logApplication(personId) {
+          if (!state.auth.user || !state.auth.token) {
+            setSyncStatus("Please sign in to log applications", "error");
+            return;
+          }
+          if (state.auth.user.personId !== personId) {
+            setSyncStatus("You can only update your own board", "error");
+            return;
+          }
+          const refs = state.cardRefs[personId];
+          if (!refs || !refs.companyInputEl || !refs.countryInputEl) {
+            return;
+          }
+          const company = refs.companyInputEl.value.trim();
+          const country = refs.countryInputEl.value.trim();
+          const missing = {
+            company: !company,
+            country: !country,
+          };
+          if (missing.company || missing.country) {
+            showError(personId, missing);
+            return;
+          }
+          setButtonLoading(refs, true);
+          setSyncStatus("Saving application…", "info");
+          try {
+            const payload = await fetchJson(API.log, {
+              method: "POST",
+              headers: authHeaders({ "Content-Type": "application/json" }),
+              body: JSON.stringify({ company, country }),
+            });
+            refs.companyInputEl.value = "";
+            refs.countryInputEl.value = "";
+            clearError(personId);
+            setPeople(payload.people ?? []);
+            renderPeople();
+            updateTeamTotal(payload.teamTotal ?? 0);
+            setSyncStatus("Synced just now", "success");
+          } catch (error) {
+            console.error("Unable to log application", error);
+            setSyncStatus(error.message || "Could not save. Try again.", "error");
+          } finally {
+            setButtonLoading(refs, false);
+          }
+        }
+
+        function setButtonLoading(refs, isLoading) {
+          if (!refs?.buttonEl) return;
+          refs.buttonEl.disabled = isLoading;
+        }
+
+        function setAuth(next) {
+          if (!next) return;
+          state.auth = {
+            token: next.token,
+            user: next.user,
+          };
+          saveAuth();
+          updateScreens();
+        }
+
+        function clearAuth() {
+          state.auth = { token: null, user: null };
+          saveAuth();
+        }
+
+        function saveAuth() {
+          try {
+            if (state.auth.token) {
+              localStorage.setItem(STORAGE_KEYS.auth, JSON.stringify(state.auth));
+            } else {
+              localStorage.removeItem(STORAGE_KEYS.auth);
+            }
+          } catch {
+            // ignore storage failures
+          }
+        }
+
+        function loadStoredAuth() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEYS.auth);
+            if (!raw) return { token: null, user: null };
+            const parsed = JSON.parse(raw);
+            return {
+              token: parsed.token ?? null,
+              user: parsed.user ?? null,
+            };
+          } catch {
+            return { token: null, user: null };
+          }
+        }
+
+        function updateScreens() {
+          if (state.auth.user) {
+            if (els.authScreen) els.authScreen.hidden = true;
+            if (els.trackerScreen) els.trackerScreen.hidden = false;
+            if (els.currentUserName) {
+              els.currentUserName.textContent = state.auth.user.displayName || state.auth.user.username;
+            }
+          } else {
+            if (els.authScreen) els.authScreen.hidden = false;
+            if (els.trackerScreen) els.trackerScreen.hidden = true;
+            if (els.currentUserName) els.currentUserName.textContent = "—";
+          }
+        }
+
+        function setErrorMessage(target, message) {
+          if (!target) return;
+          target.textContent = message;
+        }
+
+        function clearErrorMessage(target) {
+          if (!target) return;
+          target.textContent = "";
+        }
+
         function formatTimestamp(value) {
           const date = value instanceof Date ? value : new Date(value);
+          if (Number.isNaN(date.getTime())) {
+            return "Unknown";
+          }
           return date.toLocaleString(undefined, {
             month: "short",
             day: "numeric",
@@ -823,29 +1225,38 @@
           });
         }
 
-        function setSyncStatus(message, variant = "info") {
-          if (!syncStatusEl) {
-            return;
+        function authHeaders(base = {}) {
+          const headers = { ...base };
+          if (state.auth.token) {
+            headers.Authorization = `Bearer ${state.auth.token}`;
           }
-          syncStatusEl.textContent = message;
-          syncStatusEl.dataset.variant = variant;
+          return headers;
         }
 
         async function fetchJson(url, options = {}) {
           const config = {
-            ...options,
+            method: options.method ?? "GET",
             headers: {
               Accept: "application/json",
               ...(options.headers || {}),
             },
+            body: options.body,
           };
-          const response = await fetch(url, config);
-          if (!response.ok) {
-            throw new Error(`Request failed (${response.status})`);
+          if (options.auth) {
+            config.headers = authHeaders(config.headers);
           }
-          return response.json();
+          const response = await fetch(url, config);
+          const contentType = response.headers.get("content-type") || "";
+          const isJson = contentType.includes("application/json");
+          const payload = isJson ? await response.json() : await response.text();
+          if (!response.ok) {
+            const message = typeof payload === "object" && payload?.error ? payload.error : `Request failed (${response.status})`;
+            throw new Error(message);
+          }
+          return payload;
         }
       })();
     </script>
+
   </body>
 </html>

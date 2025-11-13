@@ -1,9 +1,12 @@
 {
   "name": "internship-tracker",
-  "version": "deploy",
+  "version": "env",
   "private": true,
   "type": "module",
   "description": "Internship tracker with Vercel Blob-backed API routes.",
+  "scripts": {
+    "restore-state": "node scripts/restore-state.mjs"
+  },
   "dependencies": {
     "@vercel/blob": "^0.19.0"
   }

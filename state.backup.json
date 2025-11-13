@@ -1,0 +1,79 @@
+{
+  "lmatador": {
+    "count": 23,
+    "applications": [
+      { "company": "Deloitte", "country": "France", "timestamp": "2025-11-13T19:32:15.262Z" },
+      { "company": "Deloitte", "country": "France", "timestamp": "2025-11-13T19:31:34.121Z" },
+      { "company": "Jet Aviation", "country": "Switzerland", "timestamp": "2025-11-12T16:44:35.865Z" },
+      { "company": "Unilever", "country": "France", "timestamp": "2025-11-12T16:38:29.007Z" },
+      { "company": "Gmv", "country": "Spain", "timestamp": "2025-11-12T16:37:37.722Z" },
+      { "company": "Marvell", "country": "Spain", "timestamp": "2025-11-12T16:36:15.637Z" },
+      { "company": "Unilever", "country": "Netherlands", "timestamp": "2025-11-12T16:35:26.350Z" },
+      { "company": "Unilever", "country": "Netherlands", "timestamp": "2025-11-12T16:34:46.126Z" },
+      { "company": "AgriPlace BV", "country": "Netherlands", "timestamp": "2025-11-11T14:49:06.354Z" },
+      { "company": "Onramper", "country": "Netherlands", "timestamp": "2025-11-11T14:39:07.475Z" },
+      { "company": "Matyis AG", "country": "Netherlands", "timestamp": "2025-11-11T14:07:50.133Z" },
+      { "company": "Sancovia Gruppe", "country": "Netherlands", "timestamp": "2025-11-11T14:07:05.726Z" },
+      { "company": "Metyis AG", "country": "Netherlands", "timestamp": "2025-11-11T13:59:25.059Z" },
+      { "company": "Credit Agricole", "country": "France", "timestamp": "2025-11-11T09:43:43.550Z" },
+      { "company": "Credit Agricole", "country": "France", "timestamp": "2025-11-11T09:43:31.280Z" },
+      { "company": "Artefact", "country": "Singapore", "timestamp": "2025-11-11T09:26:12.250Z" },
+      { "company": "Google", "country": "Australia", "timestamp": "2025-11-11T09:19:22.032Z" },
+      { "company": "mc2i", "country": "France", "timestamp": "2025-11-11T08:53:28.889Z" },
+      { "company": "bnp paribas", "country": "Luxembourg", "timestamp": "2025-11-10T23:32:43.385Z" },
+      { "company": "bnp paribas", "country": "France", "timestamp": "2025-11-10T23:28:45.833Z" },
+      { "company": "bnp paribas", "country": "France", "timestamp": "2025-11-10T23:21:24.400Z" },
+      { "company": "bnp paribas", "country": "France", "timestamp": "2025-11-10T23:21:00.514Z" },
+      { "company": "bnp paribas", "country": "France", "timestamp": "2025-11-10T23:04:15.535Z" }
+    ]
+  },
+  "de-lorche": {
+    "count": 20,
+    "applications": [
+      { "company": "L'Oréal", "country": "France", "timestamp": "2025-11-13T18:35:09.797Z" },
+      { "company": "Monsieur TSHIRT", "country": "France", "timestamp": "2025-11-13T16:19:52.961Z" },
+      { "company": "EXPLEO", "country": "France", "timestamp": "2025-11-13T15:59:19.530Z" },
+      { "company": "Jet Aviation", "country": "Switzerland", "timestamp": "2025-11-12T09:48:46.596Z" },
+      { "company": "OVRSEA", "country": "France", "timestamp": "2025-11-12T08:56:04.520Z" },
+      { "company": "DIOR", "country": "France", "timestamp": "2025-11-12T08:48:16.339Z" },
+      { "company": "SAFRAN", "country": "France", "timestamp": "2025-11-11T20:06:18.695Z" },
+      { "company": "ETYO", "country": "France", "timestamp": "2025-11-11T19:33:52.142Z" },
+      { "company": "Merck", "country": "Switzerland", "timestamp": "2025-11-11T10:13:52.788Z" },
+      { "company": "JENOPTIK AG", "country": "Germany", "timestamp": "2025-11-11T09:37:39.362Z" },
+      { "company": "Lepros", "country": "Germany", "timestamp": "2025-11-11T09:36:29.901Z" },
+      { "company": "Nuventura", "country": "Germany", "timestamp": "2025-11-11T09:33:03.546Z" },
+      { "company": "NOMOO Eis", "country": "Germany", "timestamp": "2025-11-11T09:29:59.967Z" },
+      { "company": "Sensit", "country": "Germany", "timestamp": "2025-11-11T09:28:19.177Z" },
+      { "company": "DHL", "country": "Germany", "timestamp": "2025-11-11T08:38:46.830Z" },
+      { "company": "Gretsch-Unitas", "country": "Germany", "timestamp": "2025-11-11T08:37:31.000Z" },
+      { "company": "Amazon", "country": "Germany", "timestamp": "2025-11-11T08:20:04.992Z" },
+      { "company": "Kloepfel Group", "country": "Germany", "timestamp": "2025-11-11T07:55:58.153Z" },
+      { "company": "Peeces GmbH", "country": "Germany", "timestamp": "2025-11-11T07:53:35.532Z" },
+      { "company": "L'Oreal", "country": "France", "timestamp": "2025-11-11T07:49:03.758Z" }
+    ]
+  },
+  "del-mundo": {
+    "count": 19,
+    "applications": [
+      { "company": "L'oréal", "country": "Netherlands", "timestamp": "2025-11-12T12:32:17.399Z" },
+      { "company": "L'oréal", "country": "France", "timestamp": "2025-11-12T12:23:34.619Z" },
+      { "company": "L'oréal", "country": "France", "timestamp": "2025-11-12T11:24:35.035Z" },
+      { "company": "Socomec Group", "country": "France", "timestamp": "2025-11-12T11:17:36.518Z" },
+      { "company": "ACG", "country": "Netherlands", "timestamp": "2025-11-12T11:09:32.822Z" },
+      { "company": "Chanel", "country": "Switzerland", "timestamp": "2025-11-11T15:26:17.022Z" },
+      { "company": "Jet aviation", "country": "Switzerland", "timestamp": "2025-11-11T15:18:02.878Z" },
+      { "company": "Van Cleef & Arpels", "country": "Switzerland", "timestamp": "2025-11-11T15:17:26.975Z" },
+      { "company": "XPENG", "country": "Netherlands", "timestamp": "2025-11-11T15:01:50.640Z" },
+      { "company": "Tesla", "country": "Netherlands", "timestamp": "2025-11-11T14:59:33.272Z" },
+      { "company": "ASML", "country": "Netherlands", "timestamp": "2025-11-11T10:53:14.167Z" },
+      { "company": "BSH Group", "country": "Germany", "timestamp": "2025-11-11T09:24:16.274Z" },
+      { "company": "lufthansagroup", "country": "Germany", "timestamp": "2025-11-11T09:11:08.896Z" },
+      { "company": "NestlÃ©", "country": "France", "timestamp": "2025-11-11T07:29:14.220Z" },
+      { "company": "ALL Circuits", "country": "France", "timestamp": "2025-11-11T07:27:35.255Z" },
+      { "company": "Sandro", "country": "France", "timestamp": "2025-11-11T07:06:47.344Z" },
+      { "company": "Safran", "country": "France", "timestamp": "2025-11-11T07:00:27.843Z" },
+      { "company": "Groupe Bon marchÃ©", "country": "France", "timestamp": "2025-11-11T06:59:25.094Z" },
+      { "company": "Capgemini", "country": "France", "timestamp": "2025-11-11T06:14:41.168Z" }
+    ]
+  }
+}
