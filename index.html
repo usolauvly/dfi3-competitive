@@ -63,6 +63,46 @@
         background: var(--bg-overlay);
         border: 1px solid rgba(255, 255, 255, 0.08);
         box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .countdown-banner {
+        margin: 1.5rem 0 0;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(0, 0, 0, 0.7));
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .countdown-banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.12) 10px, transparent 10px, transparent 20px);
+        opacity: 0.2;
+      }
+
+      .countdown-banner h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        color: #ffe4e4;
+      }
+
+      .countdown-banner p {
+        margin: 0.35rem 0 0;
+        font-size: 1rem;
+        color: #ff9f9f;
+      }
+
+      .countdown-number {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 800;
+        color: #ff4d4d;
+        text-shadow: 0 0 12px rgba(255, 77, 77, 0.7);
       }
 
       h1 {
@@ -535,6 +575,10 @@
             Your browser does not support the audio element.
           </audio>
         </div>
+        <div class="countdown-banner">
+          <h2>⏳ <span class="countdown-number" data-role="days-left">0</span> days left</h2>
+          <p>If you don’t land an internship before January 1st, you’ll be stuck in Morocco forever. Move.</p>
+        </div>
       </header>
 
       <section class="auth-section" data-role="auth-screen">
@@ -635,6 +679,7 @@
         function init() {
           initForms();
           bootstrap();
+          startCountdown();
         }
 
         async function bootstrap() {
@@ -1062,6 +1107,20 @@
           if (!els.syncStatus) return;
           els.syncStatus.textContent = message;
           els.syncStatus.dataset.variant = variant;
+        }
+
+        function startCountdown() {
+          const target = new Date("2026-01-01T00:00:00Z");
+          const label = document.querySelector('[data-role="days-left"]');
+          if (!label) return;
+          const update = () => {
+            const now = new Date();
+            const diff = target - now;
+            const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+            label.textContent = days;
+          };
+          update();
+          setInterval(update, 1000 * 60 * 60);
         }
 
         function showError(personId, missing) {
