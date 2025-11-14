@@ -46,6 +46,16 @@ If the live blob ever gets wiped, you can push a known-good snapshot back into `
    ```
    The script normalizes the payload and overwrites the blob via the same `@vercel/blob` SDK the API uses.
 
+## Removing an account
+
+When you need to delete a user (and their tracker lane):
+
+```bash
+npm run remove-user -- <username>
+```
+
+The script pulls `internship-tracker/users.json`, removes the matching record, deletes their person entry from `state.json`, and writes both blobs back. As with the other scripts, make sure `BLOB_*` env vars are available in your shell (e.g., `source .env.local`) before running it.
+
 ## Authentication & permissions
 
 - The `/api/auth/register`, `/api/auth/login`, and `/api/auth/me` routes manage accounts, backed by a second blob (`internship-tracker/users.json`). Passwords are hashed via PBKDF2 before they leave the server.
