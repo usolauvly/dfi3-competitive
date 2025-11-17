@@ -887,6 +887,7 @@
 
         function buildPersonBlock(person) {
           const isOwner = state.auth.user?.personId === person.id;
+          const headline = person.username || person.displayName;
           const block = document.createElement("article");
           block.className = "person-block";
           block.dataset.person = person.id;
@@ -899,7 +900,7 @@
 
           const header = document.createElement("header");
           const title = document.createElement("h2");
-          title.textContent = person.displayName;
+          title.textContent = headline;
           const label = document.createElement("p");
           label.className = "count-label";
           label.textContent = "Applications logged";
@@ -973,7 +974,7 @@
           } else {
             const note = document.createElement("p");
             note.className = "lock-note";
-            note.textContent = `Only ${person.displayName} can log here.`;
+            note.textContent = `Only ${headline} can log here.`;
             card.appendChild(note);
           }
 
@@ -992,7 +993,7 @@
           statsPanel.className = "stats-panel";
           const summary = document.createElement("summary");
           const summaryLabel = document.createElement("span");
-          summaryLabel.textContent = `Stats for ${person.displayName}`;
+          summaryLabel.textContent = `Stats for ${headline}`;
           const summaryValue = document.createElement("span");
           summaryValue.dataset.role = "stat-summary";
           summaryValue.textContent = "0 apps · 0%";
