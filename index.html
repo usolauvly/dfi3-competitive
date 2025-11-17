@@ -1319,7 +1319,7 @@
             if (els.authScreen) els.authScreen.hidden = true;
             if (els.trackerScreen) els.trackerScreen.hidden = false;
             if (els.currentUserName) {
-              els.currentUserName.textContent = state.auth.user.displayName || state.auth.user.username;
+              els.currentUserName.textContent = state.auth.user.username;
             }
           } else {
             if (els.authScreen) els.authScreen.hidden = false;
